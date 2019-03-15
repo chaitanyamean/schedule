@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Install Angular</h2>
+<mat-dialog-content class="mat-typography">
+        <div class="container">
+
+                <mat-form-field>
+                        <input matInput [matDatepicker]="pickers" placeholder="Choose a date" [(ngModel)]="date">
+                        <mat-datepicker-toggle matSuffix [for]="pickers"></mat-datepicker-toggle>
+                        <mat-datepicker #pickers></mat-datepicker>
+                      </mat-form-field>
+                
+                
+                </div>
+              <div class="container">
+                    <mat-form-field>
+                      <mat-select placeholder="Select Studio" [(ngModel)]="studioName">
+                        <mat-option *ngFor="let item of studiosList" [value]="item">
+                          {{item}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    </div>
+
+              <div class="container">
+                    
+                    <input [ngxTimepicker]="picker" [(ngModel)]="startTime" placeholder="Select Start Time" [format]="24">
+<ngx-material-timepicker #picker></ngx-material-timepicker>
+</div>
+
+<div class="container">
+
+<input [ngxTimepicker]="pickerss" placeholder="Select End Time" [(ngModel)]="endTime" [format]="24">
+<ngx-material-timepicker #pickerss></ngx-material-timepicker>
+</div>
+
+<div class="container">
+
+<mat-form-field class="example-full-width">
+        <input matInput placeholder="Faculty" [(ngModel)]="faculty" value="">
+      </mat-form-field>
+  </div>
+
+      <div class="container">
+
+      <mat-form-field class="example-full-width">
+            <input matInput placeholder="Assigner Name" [(ngModel)]="assignerName" value="">
+          </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="create()">{{actionBtn}}</button>
+</mat-dialog-actions>
