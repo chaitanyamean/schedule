@@ -38,22 +38,18 @@ let details = {
 
 this.scheduleService.getSchedules(details).subscribe(data => {
 
+  this.resObj = null;
   if(data === null) {
     this.isNoData = true;
     this.isTableDisplay = false;
 
-    
   } else if(data){
     this.isNoData = true;
     this.isTableDisplay = true;
     this.resObj = data;
-
   }
-  
 })
-
   }
-
 
    formatDate(date) {
      if(typeof(date) === 'object') {
@@ -74,15 +70,24 @@ this.scheduleService.getSchedules(details).subscribe(data => {
 addSchedule() {
   this.isNoData = false;
 
-  let sendingObj = {
+    let resObj = {
     'studioName' : this.studioName,
     'date': this.date,
-    'isNew': true
+    'isNew': true,
+    'studioScheduleSlotList': [
+    ]
   }
+
+  if(this.resObj) {
+    resObj.studioScheduleSlotList = this.resObj.studioScheduleSlotList 
+    resObj['studioScheduleId'] = this.resObj.studioScheduleId;
+  }
+
+  // this.resObj['isNew'] = true;
 
   const dialogRef = this.dialog.open(DialogContentExampleDialog, {
     data: {
-      dataKey: sendingObj
+      dataKey: resObj
     }
   });
 
@@ -91,9 +96,10 @@ addSchedule() {
     });
   }
 
-  updateSchedule(resObj) {
+  updateSchedule(resObj, i) {
     this.isNoData = false;
     resObj['isNew'] =  false
+    resObj['selectedindex'] = i
     const dialogRef = this.dialog.open(DialogContentExampleDialog, {
       data: {
         dataKey: resObj
@@ -134,18 +140,18 @@ export class DialogContentExampleDialog implements OnInit {
       this.isUpdate();
     } else {
       this.date = this.data.dataKey.date
-this.studioName = this.data.dataKey.studioName
+      this.studioName = this.data.dataKey.studioName
     }
   }
 
   isUpdate() {
 this.date = this.data.dataKey.date
 this.studioName = this.data.dataKey.studioName
-this.endTime = this.data.dataKey.studioScheduleSlotList[0].endTime
-this.startTime = this.data.dataKey.studioScheduleSlotList[0].startTime
-this.faculty = this.data.dataKey.studioScheduleSlotList[0].faculty
-this.assignerName = this.data.dataKey.studioScheduleSlotList[0].assignerName
-this.studioScheduleSlotId = this.data.dataKey.studioScheduleSlotList[0].studioScheduleSlotId
+this.endTime = this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].endTime
+this.startTime = this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].startTime
+this.faculty = this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].faculty
+this.assignerName = this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].assignerName
+this.studioScheduleSlotId = this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].studioScheduleSlotId
 this.studioScheduleId = this.data.dataKey.studioScheduleId
 this.actionBtn = 'Update Schedule'
 
@@ -170,20 +176,20 @@ this.actionBtn = 'Update Schedule'
 create() {
   this.date = this.formatDate(this.date);
 if(this.actionBtn === 'Create Schedule') {
-let details = {
-  'studioName' : this.studioName,
-  'date': this.date,
-  'studioScheduleSlotList': [
-    {
+
+  let schedule = 
+  {
       'startTime': this.startTime,
       'endTime': this.endTime,
       'faculty': this.faculty,
       'assignerName': this.assignerName
     }
-  ]
-}
+  
 
-this.scheduleService.saveSchedule(details).subscribe(data => {
+  this.data.dataKey.studioScheduleSlotList.push(schedule);
+
+
+this.scheduleService.saveSchedule(this.data.dataKey).subscribe(data => {
   console.log(data);
   
 })
@@ -194,17 +200,16 @@ this.scheduleService.saveSchedule(details).subscribe(data => {
     'date': this.date,
     'studioScheduleId': this.studioScheduleId,
     'studioScheduleSlotList': [
-      {
-        'startTime': this.startTime,
-        'endTime': this.endTime,
-        'faculty': this.faculty,
-        'assignerName': this.assignerName,
-        'studioScheduleSlotId': this.studioScheduleSlotId
-      }
     ]
   }
+
+
+ this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].endTime =this.endTime
+this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].startTime = this.startTime 
+ this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].faculty =this.faculty 
+ this.data.dataKey.studioScheduleSlotList[this.data.dataKey.selectedindex].assignerName = this.assignerName
   
-  this.scheduleService.updateSchedule(details).subscribe(data => {
+  this.scheduleService.updateSchedule(this.data.dataKey).subscribe(data => {
     if(data['responseMsg'] === 'Schedule successfully updated') {
       
     } else {
