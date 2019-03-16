@@ -5,7 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ScheduleService {
-studio = ['Studio-1', 'Studio-2', 'Studio-3' ];
+studio = ['Studio-1', 'Studio-2', 'Studio-3', 'Studio-4' ];
   constructor(private http: HttpClient) { }
 url = 'http://13.232.30.248:8081/schedule'
 httpOptions: any;
